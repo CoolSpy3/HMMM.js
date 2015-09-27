@@ -278,16 +278,6 @@ app.controller('SimulatorCtrl', ['$scope', '$location', '$timeout', 'HmmmSim', f
   $scope.currentTimeout = undefined;
   
   $scope.runProgram = function() {
-    /*var execute = function() {
-      if (simulator.state !== simulator.states.ERROR && simulator.state !== simulator.states.HALT) {
-        $scope.currentTimeout = $timeout(execute, $scope.timingDelay);
-        simulator.runNextInstruction();
-      }
-      else {
-        $scope.currentTimeout = undefined;
-      }
-    }
-    execute();*/
     while (simulator.state !== simulator.states.ERROR && simulator.state !== simulator.states.HALT) {
       simulator.runNextInstruction();
     }
