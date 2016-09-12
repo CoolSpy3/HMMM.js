@@ -4,4 +4,4 @@ A JavaScript implementation of an assembler and simulator for the HMMM (Harvey M
 
 ## Online Simulator
 
-HMMM.js powers the online HMMM simulator found [here](http://shickey.github.io/HMMM.js/)
+HMMM.js powers the online HMMM simulator found [here](https://bwiedermann.github.io/HMMM.js)
