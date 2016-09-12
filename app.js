@@ -131,6 +131,8 @@ app.filter('instruction', ['HmmmSim', function(HmmmSim) {
 
 app.controller('EditorCtrl', ['$scope', 'HmmmSim', function($scope, HmmmSim) {
   
+  var filename="source.hmmm";
+
   var hmmmEditor = ace.edit("hmmm-editor");
   hmmmEditor.getSession().setMode("ace/mode/hmmm");
   hmmmEditor.setTheme("ace/theme/chrome");
@@ -210,7 +212,7 @@ app.controller('EditorCtrl', ['$scope', 'HmmmSim', function($scope, HmmmSim) {
       return;
     }
     var blob = new Blob([hmmmEditor.getValue()], {type: "text/plain;charset=utf-8"});
-    saveAs(blob, "source.hmmm");
+    saveAs(blob, filename);
   }
   
   $scope.loadFile = function() {
@@ -219,6 +221,7 @@ app.controller('EditorCtrl', ['$scope', 'HmmmSim', function($scope, HmmmSim) {
   
   $scope.fileSelected = function(input) {
     var file = input.files[0];
+    filename = file.name;
     var reader = new FileReader();
     reader.onload = function(e) {
       var text = e.target.result;
