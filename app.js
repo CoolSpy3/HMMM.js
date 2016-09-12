@@ -133,7 +133,7 @@ app.controller('EditorCtrl', ['$scope', 'HmmmSim', function($scope, HmmmSim) {
   
   var hmmmEditor = ace.edit("hmmm-editor");
   hmmmEditor.getSession().setMode("ace/mode/hmmm");
-  hmmmEditor.setTheme("ace/theme/monokai");
+  hmmmEditor.setTheme("ace/theme/chrome");
   hmmmEditor.setHighlightActiveLine(false);
   hmmmEditor.setShowPrintMargin(false);
   hmmmEditor.setValue(HmmmSim.getHmmmCode());
