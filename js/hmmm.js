@@ -1262,9 +1262,9 @@ var hmmm = hmmm || {};
       }
       else if (operation === "popr") {
         var address = getRegister(ry);
+        setRegister(ry, address - 1);
         var data = getRam(address);
         setRegister(rx, data);
-        setRegister(ry, address - 1);
       }
       else if (operation === "pushr") {
         var data = getRegister(rx);
