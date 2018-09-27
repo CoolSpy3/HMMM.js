@@ -1261,8 +1261,8 @@ var hmmm = hmmm || {};
         setRam(address, data);
       }
       else if (operation === "popr") {
-        var address = getRegister(ry);
-        setRegister(ry, address - 1);
+        var address = getRegister(ry) - 1;
+        setRegister(ry, address);
         var data = getRam(address);
         setRegister(rx, data);
       }
