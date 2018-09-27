@@ -1,6 +1,7 @@
 body {
   /*padding-top: 70px;*/
-  background: rgba(0, 40, 100, .6);
+  background: #004358;
+  font-family: 'Noto Sans', sans-serif;
 }
 
 table tr td:first-child, table th:first-child {
@@ -28,14 +29,14 @@ table tr td:first-child, table th:first-child {
 }
 
 #hmmm-console {
-  height: 160px;
+  height: 120px;
 }
 
 .simulator-controls {
   padding-bottom: 10px;
 }
 
-.sim-fixed.ui-scrollfix {
+.scrollfix-enabled.ui-scrollfix {
   position: fixed;
   top: 21px;
 }
@@ -75,6 +76,80 @@ table tr td:first-child, table th:first-child {
   width: 45%;
 }
 
+.ram-base-column {
+  width: 4%;
+}
+
+.ram-column {
+  width: 6%;
+}
+
+.pc-pointer {
+  color: #ABD19F;
+}
+
+.last-pc-pointer {
+  color: #ADC2DB;
+}
+
+.code-seg {
+  background-color: #F0CAB1;
+}
+
+.pc-index {
+  background-color: #ABD19F;
+}
+
+.last-pc-index {
+  background-color: #ADC2DB;
+}
+
+.changed-ram {
+  background-color: #FFF4BA;
+}
+
+.changed-ram-animated {
+  animation-duration: 1s;
+  animation-name: ram-animation;
+}
+
+@keyframes ram-animation {
+  from {
+    background-color: #FFF000;
+  }
+  to {
+    background-color: #FFF4BA;
+  }
+}
+
+.selected-ram {
+  font-weight: bold;
+}
+
+.ram-table-info {
+  margin-top: 21px;
+}
+
+.color-box {
+  border: 1px solid grey;
+}
+
+.color-box::after {
+  content: '\00A0\00A0\00A0\00A0';
+}
+
+/* Bootstrap Overrides */
+
+.dl-horizontal dt {
+  width: 260px;
+}
+.dl-horizontal dd {
+  margin-left: 280px;
+}
+
+.tooltip-inner {
+    white-space:pre-wrap;
+}
 
 /* Animations */
 
@@ -87,7 +162,7 @@ table tr td:first-child, table th:first-child {
   width: 100%;
 }
 
-.view-frame.slide-forward.ng-enter {
+/*.view-frame.slide-forward.ng-enter {
   -webkit-animation: 0.5s slide-in-from-right;
   -moz-animation: 0.5s slide-in-from-right;
   -o-animation: 0.5s slide-in-from-right;
@@ -117,7 +192,7 @@ table tr td:first-child, table th:first-child {
   -o-animation: 0.5s slide-out-to-right;
   animation: 0.5s slide-out-to-right;
   z-index: 99;
-}
+}*/
 
 @keyframes slide-in-from-right {
   from { left: 100%; }

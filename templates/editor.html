@@ -14,6 +14,12 @@
       </div>
       <div class="panel-body">
         <div class="editor-head">
+          <div class="btn-group">
+            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Try an Example! <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li ng-repeat="example in examples track by $index"><a href="#" ng-click="selectExample($index)">{{example.name}}</a></li>
+            </ul>
+          </div>
           <button class="btn btn-default" ng-click="loadFile()">Load File <span class="glyphicon glyphicon-floppy-open"></span></button>
           <input type="file" id="secret-file-select" accept=".hmmm" onchange="angular.element(this).scope().fileSelected(this)" />
           <button class="btn btn-default" ng-click="saveFile()">Save File <span class="glyphicon glyphicon-floppy-save"></span></button>
