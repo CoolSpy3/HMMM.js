@@ -32,6 +32,8 @@ var hmmm = hmmm || {};
       "storen" : "storen",
       "loadr"  : "loadr",
       "storer" : "storer",
+      "popr"   : "popr",
+      "pushr"  : "pushr",
       "addn"   : "addn",
       "add"    : "add",
       "copy"   : "copy",
@@ -77,6 +79,8 @@ var hmmm = hmmm || {};
       "storen" : "ru",
       "loadr"  : "rr",
       "storer" : "rr",
+      "popr"   : "rr",
+      "pushr"  : "rr",
       "addn"   : "rs",
       "add"    : "rrr",
       "copy"   : "rr",
@@ -104,6 +108,8 @@ var hmmm = hmmm || {};
           "storen" : Object.freeze({ opcode : "0011000000000000", mask : "1111000000000000" }),
           "loadr"  : Object.freeze({ opcode : "0100000000000000", mask : "1111000000001111" }),
           "storer" : Object.freeze({ opcode : "0100000000000001", mask : "1111000000001111" }),
+          "popr"   : Object.freeze({ opcode : "0100000000000010", mask : "1111000000001111" }),
+          "pushr"  : Object.freeze({ opcode : "0100000000000011", mask : "1111000000001111" }),
           "addn"   : Object.freeze({ opcode : "0101000000000000", mask : "1111000000000000" }),
           "nop"    : Object.freeze({ opcode : "0110000000000000", mask : "1111111111111111" }),
           "copy"   : Object.freeze({ opcode : "0110000000000000", mask : "1111000000001111" }),
@@ -131,6 +137,8 @@ var hmmm = hmmm || {};
       "storen",
       "loadr",
       "storer",
+      "popr",
+      "pushr",
       "addn",
       "nop",
       "copy",
@@ -1251,6 +1259,18 @@ var hmmm = hmmm || {};
         var data = getRegister(rx);
         var address = getRegister(ry);
         setRam(address, data);
+      }
+      else if (operation === "popr") {
+        var address = getRegister(ry);
+        var data = getRam(address);
+        setRegister(rx, data);
+        setRegister(ry, address - 1);
+      }
+      else if (operation === "pushr") {
+        var data = getRegister(rx);
+        var address = getRegister(ry);
+        setRam(address, data);
+        setRegister(ry, address + 1);
       }
       else if (operation === "addn") {
         var data = getRegister(rx);
