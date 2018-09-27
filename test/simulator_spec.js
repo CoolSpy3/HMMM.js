@@ -263,6 +263,22 @@ describe('HmmmSimulator', function() {
     simulator.run();
     expect(simulator.registers[3]).to.equal(5);
   });
+
+  it('understands `popr`', function () {
+    var bin = assembler.assemble("0 setn r1 5\n1 storen r1 127\n2 setn r2 127\n3 popr r3 r2\n4 halt");
+    simulator.loadBinary(bin.binary);
+    simulator.run();
+    expect(simulator.registers[3]).to.equal(5);
+    expect(simulator.registers[2]).to.equal(126);
+  });
+
+  it('understands `pushr`', function () {
+    var bin = assembler.assemble("0 setn r1 5\n1 setn r2 127\n2 pushr r1 r2\n3 halt");
+    simulator.loadBinary(bin.binary);
+    simulator.run();
+    expect(simulator.ram[127]).to.equal(5);
+    expect(simulator.registers[2]).to.equal(127);
+  });
   
   it('throws an error when in safe mode and attempting to execute code outside code segment', function() {
     var err;
