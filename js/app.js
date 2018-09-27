@@ -107,14 +107,14 @@ app.controller('EditorCtrl', ['$scope', 'HmmmSim', function($scope, HmmmSim) {
   
   var hmmmEditor = ace.edit("hmmm-editor");
   hmmmEditor.getSession().setMode("ace/mode/hmmm");
-  hmmmEditor.setTheme("ace/theme/monokai");
+  hmmmEditor.setTheme("ace/theme/chrome");
   hmmmEditor.setHighlightActiveLine(false);
   hmmmEditor.setShowPrintMargin(false);
   hmmmEditor.setValue(HmmmSim.getHmmmCode());
   hmmmEditor.clearSelection();
 
   var binEditor = ace.edit("bin-editor");
-  binEditor.setTheme("ace/theme/monokai");
+  binEditor.setTheme("ace/theme/chrome");
   binEditor.setReadOnly(true);
   binEditor.setHighlightActiveLine(false);
   binEditor.setShowPrintMargin(false);
@@ -216,7 +216,7 @@ app.controller('EditorCtrl', ['$scope', 'HmmmSim', function($scope, HmmmSim) {
 
 app.controller('SimulatorCtrl', ['$scope', '$location', '$timeout', 'HmmmSim', function($scope, $location, $timeout, HmmmSim) {
   var hmmmConsole = ace.edit("hmmm-console");
-  hmmmConsole.setTheme("ace/theme/monokai");
+  hmmmConsole.setTheme("ace/theme/chrome");
   hmmmConsole.setReadOnly(true);
   hmmmConsole.setShowPrintMargin(false);
   hmmmConsole.renderer.setShowGutter(false);
