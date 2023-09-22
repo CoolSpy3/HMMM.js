@@ -434,7 +434,7 @@ var hmmm = hmmm || {};
   }
   
   function isNewline(character) {
-    return character === '\n';
+    return character === '\n' || character === '\r';
   }
   
   function isNumericConstant(string) {
