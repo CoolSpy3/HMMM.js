@@ -438,11 +438,11 @@ var hmmm = hmmm || {};
   //-------------------
   
   function isWhitespace(character) {
-    return character === ' ' || character === '\t';
+    return character === ' ' || character === '\t' || character === '\r';
   }
   
   function isNewline(character) {
-    return character === '\n' || character === '\r';
+    return character === '\n';
   }
   
   function isNumericConstant(string) {
