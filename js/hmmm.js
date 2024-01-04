@@ -808,28 +808,35 @@ var hmmm = hmmm || {};
         else {
           throwParseError("Expected a register argument but found " + printableStringForType(token.type));
         }
-      }
-      
+
       // Checking for an unsigned integer argument
       else if (state === parserStates.UNSIGNED_INT) {
         if (token.type === tokenTypes.CONSTANT) {
-          
-          currentArgTokens.push(token);
-          transitionStateToNextArgType();
-          
+          const value = parseInt(token);
+
+          if(isNaN(value) || value < 0 || value > 255) {
+            throwParseError("Expected a signed integer between 0 and 255 but found " + token);
+          } else{
+            currentArgTokens.push(token);
+            transitionStateToNextArgType();
+          }
         }
         else {
           throwParseError("Expected an unsigned integer argument but found " + printableStringForType(token.type));
         }
       }
-      
+
       // Checking for a signed integer argument
       else if (state === parserStates.SIGNED_INT) {
         if (token.type === tokenTypes.CONSTANT) {
-          
-          currentArgTokens.push(token);
-          transitionStateToNextArgType();
-          
+          const value = parseInt(token);
+
+          if(isNaN(value) || value < -128 || value > 127) {
+            throwParseError("Expected a signed integer between -128 and 127 but found " + token);
+          } else{
+            currentArgTokens.push(token);
+            transitionStateToNextArgType();
+          }
         }
         else {
           throwParseError("Expected a signed integer argument but found " + printableStringForType(token.type));
