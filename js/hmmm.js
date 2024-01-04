@@ -245,7 +245,7 @@ var hmmm = hmmm || {};
     }
 
     // By performing a bitwise AND, we effectively truncate the binary number to <width> bits. This also takes care of 2s complement conversion
-    return padZeroesLeft((parseInt(integer) & Math.pow(2, width)).toString(2), width);
+    return padZeroesLeft((parseInt(integer) & ((1 << width) - 1)).toString(2), width);
   }
   
   function padZeroesLeft(string, width) {
