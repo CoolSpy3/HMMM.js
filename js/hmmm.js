@@ -818,7 +818,7 @@ var hmmm = hmmm || {};
             currentArgTokens.push(token);
             transitionStateToNextArgType();
           } else {
-            throwParseError("Expected a signed integer between 0 and 255 but found " + token);
+            throwParseError("Expected a signed integer between 0 and 255 but found " + token.val);
           }
         }
         else {
@@ -833,7 +833,7 @@ var hmmm = hmmm || {};
             currentArgTokens.push(token);
             transitionStateToNextArgType();
           } else {
-            throwParseError("Expected a signed integer between -128 and 127 but found " + token);
+            throwParseError("Expected a signed integer between -128 and 127 but found " + token.val);
           }
         }
         else {
