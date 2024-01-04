@@ -600,8 +600,7 @@ var hmmm = hmmm || {};
   //----------------------
 
   function binaryForRegister(register) {
-    var bin_string = (+(register.slice(1))).toString(2);
-    return padZeroesLeft(bin_string, 4);
+    return binaryForInteger(register.slice(1), 4);
   }
   
   function binaryForTokens(instToken, argTokens) {
@@ -800,10 +799,12 @@ var hmmm = hmmm || {};
       // Checking for a register argument
       else if (state === parserStates.REGISTER) {
         if (token.type === tokenTypes.REGISTER) {
-          
-          currentArgTokens.push(token);
-          transitionStateToNextArgType();
-          
+          if (isValidRegisterArgument(token.val)) {
+            throwParseError("Expected a register between r0 and r15 but found " + token);
+          } else {
+            currentArgTokens.push(token);
+            transitionStateToNextArgType();
+          }
         }
         else {
           throwParseError("Expected a register argument but found " + printableStringForType(token.type));
@@ -813,9 +814,7 @@ var hmmm = hmmm || {};
       // Checking for an unsigned integer argument
       else if (state === parserStates.UNSIGNED_INT) {
         if (token.type === tokenTypes.CONSTANT) {
-          const value = parseInt(token);
-
-          if (isNaN(value) || value < 0 || value > 255) {
+          if (isValidUnsignedArgument(token.val)) {
             throwParseError("Expected a signed integer between 0 and 255 but found " + token);
           } else {
             currentArgTokens.push(token);
@@ -832,7 +831,7 @@ var hmmm = hmmm || {};
         if (token.type === tokenTypes.CONSTANT) {
           const value = parseInt(token);
 
-          if (isNaN(value) || value < -128 || value > 127) {
+          if (isValidSignedArgument(token.val)) {
             throwParseError("Expected a signed integer between -128 and 127 but found " + token);
           } else {
             currentArgTokens.push(token);
