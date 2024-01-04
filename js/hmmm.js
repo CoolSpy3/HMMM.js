@@ -584,13 +584,13 @@ var hmmm = hmmm || {};
   function isValidSignedArgument(arg) {
     var valid_decimal =  /^-?[0-9]+$/.test(arg) && +arg >= -128 && +arg <= 127;
     // The unary + doesn't play nicely with negative hex values, so we use parseInt here
-    var valid_hex     =  /^-?0[xX][0-9a-fA-F]+$/.test(arg) && parseInt(arg) >= -128 && parseInt(arg) <= 127;
+    var valid_hex     =  /^-?0x[0-9a-f]+$/i.test(arg) && parseInt(arg) >= -128 && parseInt(arg) <= 127;
     return valid_decimal || valid_hex;
   }
 
   function isValidUnsignedArgument(arg) {
     var valid_decimal =  /^[0-9]+$/.test(arg) && +arg >= 0 && +arg <= 255;
-    var valid_hex     =  /^0[xX][0-9a-fA-F]+$/.test(arg) && +arg >= 0 && +arg <= 255;
+    var valid_hex     =  /^0x[0-9a-f]+$/i.test(arg) && +arg >= 0 && +arg <= 255;
     return valid_decimal || valid_hex;
   }
   
@@ -800,10 +800,10 @@ var hmmm = hmmm || {};
       else if (state === parserStates.REGISTER) {
         if (token.type === tokenTypes.REGISTER) {
           if (isValidRegisterArgument(token.val)) {
-            throwParseError("Expected a register between r0 and r15 but found " + token);
-          } else {
             currentArgTokens.push(token);
             transitionStateToNextArgType();
+          } else {
+            throwParseError("Expected a register between r0 and r15 but found " + token.val);
           }
         }
         else {
@@ -815,10 +815,10 @@ var hmmm = hmmm || {};
       else if (state === parserStates.UNSIGNED_INT) {
         if (token.type === tokenTypes.CONSTANT) {
           if (isValidUnsignedArgument(token.val)) {
-            throwParseError("Expected a signed integer between 0 and 255 but found " + token);
-          } else {
             currentArgTokens.push(token);
             transitionStateToNextArgType();
+          } else {
+            throwParseError("Expected a signed integer between 0 and 255 but found " + token);
           }
         }
         else {
@@ -829,13 +829,11 @@ var hmmm = hmmm || {};
       // Checking for a signed integer argument
       else if (state === parserStates.SIGNED_INT) {
         if (token.type === tokenTypes.CONSTANT) {
-          const value = parseInt(token);
-
           if (isValidSignedArgument(token.val)) {
-            throwParseError("Expected a signed integer between -128 and 127 but found " + token);
-          } else {
             currentArgTokens.push(token);
             transitionStateToNextArgType();
+          } else {
+            throwParseError("Expected a signed integer between -128 and 127 but found " + token);
           }
         }
         else {
