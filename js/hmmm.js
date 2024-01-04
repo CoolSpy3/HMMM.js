@@ -1,6 +1,6 @@
 /**
  * HMMM.js
- *
+ * 
  * A javascript implementation of [Harvey-Mudd Miniature Machine (HMMM)](https://www.cs.hmc.edu/~cs5grad/cs5/hmmm/documentation/documentation.html)
  *
  * 2014-2016 Sean Hickey
@@ -8,16 +8,16 @@
  */
 ;
 var hmmm = hmmm || {};
-
+ 
 (function() {
   'use strict';
-
+  
   //*********************************************
   //
   // HMMM Language
   //
   //*********************************************
-
+  
   hmmm.lang = Object.freeze({
 
     // Maps all instruction aliases to their respective
@@ -49,7 +49,7 @@ var hmmm = hmmm || {};
       "jgtzn"  : "jgtzn",
       "jltzn"  : "jltzn",
       "jnezn"  : "jnezn",
-
+      
       // Aliases
       "mov"    : "copy",
       "jump"   : "jumpr",
@@ -97,7 +97,7 @@ var hmmm = hmmm || {};
       "jltzn"  : "ru",
       "jnezn"  : "ru"
     }),
-
+    
     opcodes : Object.freeze({
           "halt"   : Object.freeze({ opcode : "0000000000000000", mask : "1111111111111111" }),
           "read"   : Object.freeze({ opcode : "0000000000000001", mask : "1111000011111111" }),
@@ -126,7 +126,7 @@ var hmmm = hmmm || {};
           "jgtzn"  : Object.freeze({ opcode : "1110000000000000", mask : "1111000000000000" }),
           "jltzn"  : Object.freeze({ opcode : "1111000000000000", mask : "1111000000000000" })
     }),
-
+    
     opcodePrecedence : Object.freeze([
       "halt",
       "read",
@@ -170,7 +170,7 @@ var hmmm = hmmm || {};
       operation : null,
       args      : []
     };
-
+    
     // Find the correct operation by iterating over the
     // list of instructions in order of precedence
     hmmm.lang.opcodePrecedence.some(function(operation){
@@ -182,12 +182,12 @@ var hmmm = hmmm || {};
         return true;
       }
     });
-
+    
     if (!decoded.operation) {
       // We couldn't decode the operation
       return undefined;
     }
-
+    
     // Parse Arguments
     var signature = hmmm.lang.signatures[decoded.operation];
     encoded = encoded << 4;
@@ -225,7 +225,7 @@ var hmmm = hmmm || {};
     }
     return decoded;
   }
-
+    
   function instructionFromBinary(binInst) {
     var decoded = decodeBinaryInstruction(binInst);
     if (!decoded) {
@@ -247,7 +247,7 @@ var hmmm = hmmm || {};
     // By performing a bitwise AND, we effectively truncate the binary number to <width> bits. This also takes care of 2s complement conversion
     return padZeroesLeft((parseInt(integer) & Math.pow(2, width)).toString(2), width);
   }
-
+  
   function padZeroesLeft(string, width) {
     var pad = "";
     for (var i = 0; i < width - string.length; ++i) {
@@ -271,7 +271,7 @@ var hmmm = hmmm || {};
     }
     return flipped;
   }
-
+  
   function spaceIntoNibbles(bitstring) {
     var spaced = "";
     for (var i = 0; i < bitstring.length; ++i) {
@@ -312,12 +312,12 @@ var hmmm = hmmm || {};
   // The HMMM Lexer
   //
   //*********************************************
-
-
+  
+  
   //-----------------------
   // Position Data Structs
   //-----------------------
-
+  
   function createPoint(row, column) {
     return {
       row: row,
@@ -337,8 +337,8 @@ var hmmm = hmmm || {};
       end: createPoint(endRow, endColumn)
     };
   };
-
-
+  
+  
   //-------------------
   // Tokens
   //-------------------
@@ -424,42 +424,42 @@ var hmmm = hmmm || {};
   //-------------------
   // Token Validators
   //-------------------
-
+  
   function isWhitespace(character) {
     return character === ' ' || character === '\t';
   }
-
+  
   function isNewline(character) {
     return character === '\n';
   }
-
+  
   function isNumericConstant(string) {
     return /^-?[0-9]+$/.test(string) || /^-?0[xX][0-9a-fA-F]+$/.test(string);
   }
-
+  
   function isRegister(string) {
     return /^r[0-9]+$/i.test(string);
   }
-
+  
   function isInstruction(string) {
     return string in hmmm.lang.instructions;
   }
-
+  
   function isTokenBreak(character) {
     return (character === undefined || isWhitespace(character) || isNewline(character) || character === ",");
   }
-
-
+  
+  
   //-------------------
   // The Actual Lexer
   //-------------------
-
+  
   function lex(source) {
-
+    
     var lineNum = 1;
     var colNum = 1;
     var peek = '';
-
+    
     // Inner functions for scanning
     var currPos = 0;
     function getNextChar() {
@@ -471,14 +471,14 @@ var hmmm = hmmm || {};
       colNum += 1;
       return nextChar;
     }
-
+    
     function lookAhead(numChars) {
       if (currPos >= source.length) {
         return undefined;
       }
       return source.slice(currPos, currPos + numChars);
     }
-
+    
     function scanToTokenBreak() {
       var chars = peek;
       var next = lookAhead(1);
@@ -489,7 +489,7 @@ var hmmm = hmmm || {};
       }
       return chars;
     }
-
+    
     function scanToLineBreak() {
       var chars = peek;
       var next = lookAhead(1);
@@ -500,9 +500,9 @@ var hmmm = hmmm || {};
       }
       return chars;
     }
-
+    
     var tokens = [];
-
+    
     while (peek !== undefined) {
       // Scan over whitespace and find newlines
       while (true) {
@@ -520,30 +520,30 @@ var hmmm = hmmm || {};
           break;
         }
       }
-
+      
       // Comments
       if (peek === '#') {
         var start = createPoint(lineNum, colNum);
         var comment = scanToLineBreak();
         var end = createPoint(lineNum, colNum);
         var range = createRange(start, end);
-
+        
         tokens.push(createCommentToken(range, comment));
-
+        
         continue;
       }
-
+      
       var startOfToken = colNum;
       var currToken = scanToTokenBreak();
-
+      
       if (currToken === undefined) {
         continue;
       }
-
+      
       var start = createPoint(lineNum, colNum - currToken.toString().length);
       var end   = createPoint(lineNum, colNum);
       var range = createRange(start, end);
-
+      
       if (isNumericConstant(currToken)) {
         var num = (+currToken);
         tokens.push(createConstantToken(range, num));
@@ -559,28 +559,28 @@ var hmmm = hmmm || {};
       }
 
     }
-
+    
     return tokens;
-
+    
   }
-
-
+  
+  
 
   //*********************************************
   //
   // The HMMM Parser
   //
   //*********************************************
-
-
+  
+  
   //----------------------
   // Argument Validators
   //----------------------
-
+  
   function isValidRegisterArgument(arg) {
     return /^(r[0-9]|r1[0-5])$/i.test(arg);
   }
-
+  
   function isValidSignedArgument(arg) {
     var valid_decimal =  /^-?[0-9]+$/.test(arg) && +arg >= -128 && +arg <= 127;
     // The unary + doesn't play nicely with negative hex values, so we use parseInt here
@@ -593,8 +593,8 @@ var hmmm = hmmm || {};
     var valid_hex     =  /^0[xX][0-9a-fA-F]+$/.test(arg) && +arg >= 0 && +arg <= 255;
     return valid_decimal || valid_hex;
   }
-
-
+  
+  
   //----------------------
   // Binary Stuff
   //----------------------
@@ -603,28 +603,28 @@ var hmmm = hmmm || {};
     var bin_string = (+(register.slice(1))).toString(2);
     return padZeroesLeft(bin_string, 4);
   }
-
+  
   function binaryForTokens(instToken, argTokens) {
     // At this point, we assume that the tokens are formed correctly and in the
     // right order, so we forgo error checking in this function
-
+    
     // Get standarized instruction name (i.e., resolve aliases)
     var inst = hmmm.lang.instructions[instToken.val];
     var signature = hmmm.lang.signatures[inst];
     var unpaddedSignature = signature.replace(/z/, ""); // Remove z's (since they only represent padding)
     var expectedNumArgs = unpaddedSignature.length;
-
+    
     // Start with the opcode
     var opcode = hmmm.lang.opcodes[inst].opcode;
-
+    
     // Build the argument bitstring which will be OR'd with the opcode to produce final binary
     var bitstring = "0000"
-
+    
     var argIndex = 0; // Keep track of argument index separately to handle signatures with z's (i.e., padding)
     for (var i = 0; i < signature.length; ++i) {
       var argToken = argTokens[argIndex];
       var argType = signature[i];
-
+      
       if (argType === "z") {
         // Add padding, but don't increment argIndex
         bitstring += "0000";
@@ -639,10 +639,10 @@ var hmmm = hmmm || {};
       else {
         // TODO: Internal error
       }
-
+      
       argIndex += 1;
     }
-
+    
     // Pad with zeroes to make width always 16 bits
     var paddingNeeded = 16 - bitstring.length;
     for (var j = 0; j < paddingNeeded; ++j) {
@@ -656,19 +656,19 @@ var hmmm = hmmm || {};
 
     return output;
   }
-
-
+  
+  
   //----------------------
   // Error Handling
   //----------------------
-
+  
   function createParseError(range, message) {
     return {
       range: range,
       message: message
     };
   };
-
+  
   function prettyStringForError(error, source) {
     var prettyString = "ERROR [" + error.range.start.row + ":" + error.range.start.column + "]: " + error.message;
     if (source !== undefined) {
@@ -686,11 +686,11 @@ var hmmm = hmmm || {};
     }
     return prettyString;
   }
-
+  
   //----------------------
   // The Actual Parser
   //----------------------
-
+  
   var parserStates = Object.freeze({ // Indicates what the parser is "looking for"
     INST_NUM     : "INST_NUM",
     INST         : "INST",
@@ -700,29 +700,29 @@ var hmmm = hmmm || {};
     NEWLINE      : "NEWLINE",
     ERROR        : "ERROR"
   });
-
+  
   function parse(tokens) {
-
+    
     var state = parserStates.INST_NUM;
     var nextInstNum = 0;
     var nextArgTypes = [];
     var currentInstToken = undefined;
     var currentArgTokens = [];
-
+    
     var token = undefined;
-
+    
     var bin = "";
     var errors = [];
     var generatedError = false;
-
+    
     function throwParseError(message) {
-
+      
       errors.push(createParseError(token.range, message));
-
+      
       generatedError = true;
       state = parserStates.ERROR;
     }
-
+    
     function transitionStateToNextArgType() {
       if (nextArgTypes.length === 0) {
         state = parserStates.NEWLINE;
@@ -732,24 +732,24 @@ var hmmm = hmmm || {};
         state = nextArgTypes.shift();
       }
     }
-
+    
     for (var i = 0; i < tokens.length; ++i) {
       token = tokens[i];
-
+      
       // Checking for the next instruction number
       if (state === parserStates.INST_NUM) {
-
-        if (token.type === tokenTypes.COMMENT ||
+        
+        if (token.type === tokenTypes.COMMENT || 
             token.type === tokenTypes.NEWLINE) { continue; }
-
+        
         // Reset state
         currentInstToken = undefined;
         currentArgTokens = [];
-
+        
         if (token.type === tokenTypes.CONSTANT) {
           if (!(token.val === nextInstNum)) {
             throwParseError("Expected instruction number " + nextInstNum + " but found " + printableStringForType(token.val));
-
+            
             // Force the instruction number to be one more than the one found
             // in order to try to suppress the same error on future lines
             nextInstNum = token.val + 1;
@@ -762,17 +762,17 @@ var hmmm = hmmm || {};
         else {
           throwParseError("Expected an instruction number but found " + printableStringForType(token.type));
         }
-
+        
       }
-
+      
       // Checking for an instruction
       else if (state === parserStates.INST) {
-
+        
         if (token.type === tokenTypes.INSTRUCTION) {
-
+          
           // Figure out what the next parser states should be and keep them in a queue
           var currentInstToken = token;
-
+          
           var argSignature = hmmm.lang.signatures[hmmm.lang.instructions[token.val]]; // Resolve aliases before grabbing signature
           var argCodes = argSignature.split("");
           nextArgTypes = []
@@ -788,57 +788,57 @@ var hmmm = hmmm || {};
               nextArgTypes.push(parserStates.SIGNED_INT);
             }
           }
-
+          
           transitionStateToNextArgType();
-
+          
         }
         else {
           throwParseError("Expected an instruction but found " + printableStringForType(token.type));
         }
       }
-
+      
       // Checking for a register argument
       else if (state === parserStates.REGISTER) {
         if (token.type === tokenTypes.REGISTER) {
-
+          
           currentArgTokens.push(token);
           transitionStateToNextArgType();
-
+          
         }
         else {
           throwParseError("Expected a register argument but found " + printableStringForType(token.type));
         }
       }
-
+      
       // Checking for an unsigned integer argument
       else if (state === parserStates.UNSIGNED_INT) {
         if (token.type === tokenTypes.CONSTANT) {
-
+          
           currentArgTokens.push(token);
           transitionStateToNextArgType();
-
+          
         }
         else {
           throwParseError("Expected an unsigned integer argument but found " + printableStringForType(token.type));
         }
       }
-
+      
       // Checking for a signed integer argument
       else if (state === parserStates.SIGNED_INT) {
         if (token.type === tokenTypes.CONSTANT) {
-
+          
           currentArgTokens.push(token);
           transitionStateToNextArgType();
-
+          
         }
         else {
           throwParseError("Expected a signed integer argument but found " + printableStringForType(token.type));
         }
       }
-
+      
       // Checking for a newline
       else if (state === parserStates.NEWLINE) {
-
+        
         if (token.type === tokenTypes.COMMENT) { continue; }
         if (token.type === tokenTypes.NEWLINE) {
           state = parserStates.INST_NUM;
@@ -851,30 +851,30 @@ var hmmm = hmmm || {};
           throwParseError("Expected end of line but found " + printableStringForType(token.type));
         }
       }
-
+      
       else if (state === parserStates.ERROR) {
         if (token.type === tokenTypes.NEWLINE) {
           state = parserStates.INST_NUM;
         }
       }
-
+      
     }
-
+    
     if (generatedError) {
       return {
         binary: undefined,
         errors: errors
       }
     }
-
+    
     return {
       binary: bin,
       errors: undefined
     };
-
+    
   }
-
-
+  
+  
   //*********************************************
   //
   // HMMM Assembler API
@@ -885,32 +885,32 @@ var hmmm = hmmm || {};
     var tokens = lex(source);
     return parse(tokens);
   }
-
+  
   hmmm.assembler = {
     lex: lex,
     parse: parse,
     assemble: assemble,
     prettyStringForError: prettyStringForError
   };
-
-
-
-
+  
+  
+  
+  
   //*********************************************
   //
   // HMMM Simulator
   //
   //*********************************************
-
+  
 
   function createUndoStack() {
-
+    
     var stack = [];
-
+    
     function addUndoMarker() {
       stack.push("MARK");
     }
-
+    
     function addUndoableAction(undoFunction) {
       if (typeof undoFunction !== "function") {
         console.log("Warning: attempted to add non-function to undo stack");
@@ -918,25 +918,25 @@ var hmmm = hmmm || {};
       };
       stack.push(undoFunction);
     }
-
+    
     function undo() {
       var undoFunction;
       while (stack.length > 0 && (undoFunction = stack.pop()) !== "MARK") {
         undoFunction.call();
       }
     }
-
+    
     function clearStack() {
       stack = [];
     }
-
+    
     return {
       addUndoMarker: addUndoMarker,
       addUndoableAction: addUndoableAction,
       undo: undo,
       clearStack: clearStack
     }
-
+    
   }
 
 
@@ -956,21 +956,21 @@ var hmmm = hmmm || {};
   });
 
   function createSimulator(inHandler, outHandler, errHandler) {
-
+    
     var NUM_REGISTERS = 16;
     var RAM_SIZE      = 256;
 
     var machine = {};
 
     machine.undoStack = createUndoStack();
-
+    
     //---------------------------------------
     // User Defined Input/Output Functions
     //---------------------------------------
     machine.inHandler  = inHandler;
     machine.outHandler = outHandler;
     machine.errHandler = errHandler;
-
+    
     //---------------------------------------
     // Machine State (Public)
     //---------------------------------------
@@ -989,23 +989,23 @@ var hmmm = hmmm || {};
     var readTargetRegister = undefined; // Used to keep track of the register
                                         // associated with a read instruction
                                         // while waiting for user input
-
+    
     for (var i = 0; i < NUM_REGISTERS; ++i) {
       machine.registers.push(0);
     }
-
+    
     for (var j = 0; j < RAM_SIZE; ++j) {
       machine.ram.push(0);
     }
-
+    
     //---------------------------------------
     // Validators
     //---------------------------------------
-
+    
     function isValidInteger(integer) {
       return (integer >= -32768 && integer < 65535);
     }
-
+    
     function isValidJumpTarget(jumpTarget) {
       if (jumpTarget < 0 || jumpTarget >= RAM_SIZE) {
         return false;
@@ -1019,15 +1019,15 @@ var hmmm = hmmm || {};
       }
       return false;
     }
-
+    
     //---------------------------------------
     // Internal State Accessors
     //---------------------------------------
-
+    
     function getProgramCounter() {
       return machine.pc
     }
-
+    
     function setProgramCounter(jumpTarget) {
       var currentPc = getProgramCounter();
       machine.pc = jumpTarget;
@@ -1035,11 +1035,11 @@ var hmmm = hmmm || {};
         machine.pc = currentPc;
       });
     }
-
+    
     function getLastProgramCounter() {
       return machine.lastPc;
     }
-
+    
     function setLastProgramCounter(lastPc) {
       var currentLastPc = getLastProgramCounter();
       machine.lastPc = lastPc;
@@ -1047,11 +1047,11 @@ var hmmm = hmmm || {};
         machine.lastPc = currentLastPc;
       });
     }
-
+    
     function getInstructionRegister() {
       return machine.ir;
     }
-
+    
     function setInstructionRegister(binaryInst) {
       if (!isValidInteger(binaryInst)) {
         throwSimulationError("Instruction register overflow");
@@ -1063,7 +1063,7 @@ var hmmm = hmmm || {};
         machine.ir = currentIr;
       });
     }
-
+    
     function getRegister(register) {
       if (register < 0 || register >= NUM_REGISTERS) {
         throwSimulationError("Attempted to access invalid register: r" + register);
@@ -1071,7 +1071,7 @@ var hmmm = hmmm || {};
       }
       return machine.registers[register];
     }
-
+    
     function setRegister(register, value) {
       if (register < 0 || register >= NUM_REGISTERS) {
         throwSimulationError("Attempted to access invalid register: r" + register);
@@ -1090,7 +1090,7 @@ var hmmm = hmmm || {};
         machine.registers[register] = currentValue;
       })
     }
-
+    
     function getRam(address) {
       if (address < 0 || address >= RAM_SIZE) {
         throwSimulationError("Attempted to access invalid ram address: " + address);
@@ -1098,7 +1098,7 @@ var hmmm = hmmm || {};
       }
       return machine.ram[address];
     }
-
+    
     function setRam(address, value) {
       if (address < 0 || address >= RAM_SIZE) {
         throwSimulationError("Attempted to access invalid ram address: " + address);
@@ -1123,11 +1123,11 @@ var hmmm = hmmm || {};
         machine.ram[address] = currentValue;
       });
     }
-
+    
     function getMachineState() {
       return machine.state;
     }
-
+    
     function setMachineState(newState) {
       var currentState = getMachineState();
       machine.state = newState;
@@ -1135,11 +1135,11 @@ var hmmm = hmmm || {};
         machine.state = currentState;
       });
     }
-
+    
     //---------------------------------------
     // Simulation Functions
     //---------------------------------------
-
+    
     function throwSimulationError(message) {
       setMachineState(simulatorStates.ERROR);
       if (errHandler) {
@@ -1152,12 +1152,12 @@ var hmmm = hmmm || {};
         errHandler("WARNING: " + message);
       }
     }
-
+    
     function executeInstruction(operation, args) {
       // Unpack Arguments
       var rx, ry, rz, n;
       var signature = hmmm.lang.signatures[operation];
-
+      
       var argNum = 0; // Must keep track separately from loop iteration due
                       // to signatures containing 'z'
       for (var i = 0; i < signature.length; ++i) {
@@ -1193,7 +1193,7 @@ var hmmm = hmmm || {};
           return;
         }
       }
-
+      
       // Execute instruction
       if (operation === "halt") {
         setMachineState(simulatorStates.HALT);
@@ -1423,7 +1423,7 @@ var hmmm = hmmm || {};
         return;
       }
     }
-
+    
     //---------------------------------------
     // Public Functions
     //---------------------------------------
@@ -1431,19 +1431,19 @@ var hmmm = hmmm || {};
       machine.pc = 0;
       machine.lastPc = 0;
       machine.ir = 0;
-
+      
       if (clearProgram) {
         machine.codeSegmentBoundary = 0;
       }
-
+      
       for (var i = 0; i < machine.registers.length; ++i) {
         machine.registers[i] = 0;
       }
-
+      
       for (var j = machine.codeSegmentBoundary; j < machine.ram.length; ++j) {
         machine.ram[j] = 0;
       }
-
+      
       if (clearProgram) {
         setMachineState(simuatorStates.EMPTY);
       }
@@ -1452,7 +1452,7 @@ var hmmm = hmmm || {};
       }
       machine.undoStack.clearStack();
     }
-
+    
     function loadBinary(binary) {
       var instructions = [];
       binary.split("\n").forEach(function(line) {
@@ -1467,7 +1467,7 @@ var hmmm = hmmm || {};
       machine.codeSegmentBoundary = instructions.length;
       resetMachine(false);
     }
-
+    
     function runNextInstruction() {
       if (machine.state === simulatorStates.WAIT) {
         console.log("Simulator is waiting for user input");
@@ -1496,7 +1496,7 @@ var hmmm = hmmm || {};
       setProgramCounter(progCounter + 1);
       executeInstruction(decoded.operation, decoded.args);
     }
-
+    
     function stepBackward() {
       machine.undoStack.undo();
     }
@@ -1520,11 +1520,11 @@ var hmmm = hmmm || {};
     machine.runNextInstruction = runNextInstruction;
     machine.stepBackward = stepBackward;
     machine.readInput = readInput;
-
+    
     return machine;
-
+    
   }
-
+  
   //*********************************************
   //
   // HMMM Simulator API
@@ -1536,5 +1536,5 @@ var hmmm = hmmm || {};
     simulatorModes: simulatorModes,
     createSimulator: createSimulator
   };
-
+  
  })();
